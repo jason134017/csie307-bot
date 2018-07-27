@@ -73,13 +73,14 @@ def main(text):
     response = json.loads(request.getresponse().read().decode('utf-8'))
     #print (response.read())
     status=response['result']['parameters']
-    return response['result']['fulfillment']['speech']     
+    
     if(response['result']['fulfillment']['speech']=="ok,I will make an appointment ."):
-        
-        start=timeformat(status['start'])
-        end=timeformat(status['end'])
-        googlecalendarcreate("2018-07-27T20:00:00+08:00","2018-07-27T21:00:00+08:00","test")
-
+        if(status['start']!='' and status['end']!=''):
+            start=timeformat(status['start'])
+            end=timeformat(status['end'])
+            googlecalendarcreate(staer,end,"test")
+            
+    return response['result']['fulfillment']['speech']     
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
@@ -106,7 +107,6 @@ def handle_message(event):
     #message = TextSendMessage(text=event.message.text)
     #line_bot_api.reply_message(event.reply_token, message)
     result=main(event.message.text)
-    #googlecalendarcreate("2018-07-27T20:00:00+08:00","2018-07-27T21:00:00+08:00","test")
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
