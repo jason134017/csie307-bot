@@ -12,6 +12,9 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
+import os
+import json
+
 app = Flask(__name__)
 #
 # Setup the Calendar API
@@ -19,7 +22,7 @@ SCOPES = 'https://www.googleapis.com/auth/calendar'
 store = file.Storage('token.json')
 creds = store.get()
 if not creds or creds.invalid:
-    flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+    flow = client.flow_from_clientsecrets(os.environ['GOOGLE_APPLICATION_CREDENTIALS'], SCOPES)
     creds = tools.run_flow(flow, store)
 service = build('calendar', 'v3', http=creds.authorize(Http()))
 #
@@ -39,7 +42,7 @@ def googlecalendarcreate(start,end,description):
     event = service.events().insert(calendarId='primary', body=event).execute()
     
 import apiai
-import json
+
 CLIENT_ACCESS_TOKEN = 'e6e3017b385347a8b26284f52c6ea2b0'
 def main(text):
     ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
@@ -88,7 +91,7 @@ def handle_message(event):
     googlecalendarcreate("2018-09-01T00:00:00+08:00","2018-09-01T10:00:00+08:00","test")
     line_bot_api.reply_message(event.reply_token, message)
 
-import os
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
