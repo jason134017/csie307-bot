@@ -10,6 +10,27 @@ from linebot.models import *
 
 app = Flask(__name__)
 
+
+import apiai
+import json
+CLIENT_ACCESS_TOKEN = 'e6e3017b385347a8b26284f52c6ea2b0'
+def main(text):
+    ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
+
+    request = ai.text_request()
+
+    request.lang = 'de'  # optional, default value equal 'en'
+
+    request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
+
+    request.query = text
+    #response = request.getresponse()
+    response = json.loads(request.getresponse().read().decode('utf-8'))
+    #print (response.read())
+   
+    return response['result']['fulfillment']['speech']     
+    
+
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
@@ -35,7 +56,8 @@ def callback():
 def handle_message(event):
     #message = TextSendMessage(text=event.message.text)
     #line_bot_api.reply_message(event.reply_token, message)
-    message = TextSendMessage(text='Hello, world')
+    result=main(event.message.text)
+    message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
 import os
