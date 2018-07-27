@@ -106,6 +106,7 @@ def handle_message(event):
     #message = TextSendMessage(text=event.message.text)
     #line_bot_api.reply_message(event.reply_token, message)
     result=main(event.message.text)
+    googlecalendarcreate("2018-07-27T20:00:00+08:00","2018-07-27T21:00:00+08:00","test")
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
