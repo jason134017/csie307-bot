@@ -78,7 +78,7 @@ def main(text):
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
-            googlecalendarcreate(staer,end,"test")
+            googlecalendarcreate(start,end,"test")
             
     return response['result']['fulfillment']['speech']     
 # Channel Access Token
