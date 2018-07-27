@@ -13,9 +13,24 @@ from linebot.exceptions import (
 from linebot.models import *
 
 import json
-
+import datetime
 app = Flask(__name__)
 #
+def timeformat(time):
+    today=datetime.date.today()
+
+    if(len(time)==8):
+        time=str(today)+"T"+time+"+08:00"
+        #now=datetime.datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+        print ("format:"+time)
+        return time
+        
+    elif(len(time)==20):
+        time=time.replace("Z","+08:00")
+        #now=datetime.datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
+        print ("format:"+time)
+        return time
+        
 # Setup the Calendar API
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 store = file.Storage('token.json')
@@ -56,9 +71,13 @@ def main(text):
     #response = request.getresponse()
     response = json.loads(request.getresponse().read().decode('utf-8'))
     #print (response.read())
-   
+    status=response['result']['parameters']
     return response['result']['fulfillment']['speech']     
-    
+    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment ."):
+        if(status['start']!='' and status['end']!=''):
+            start=timeformat(status['start'])
+            end=timeformat(status['end'])
+            googlecalendarcreate(start,end,"test")
 
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
@@ -87,7 +106,8 @@ def handle_message(event):
     #line_bot_api.reply_message(event.reply_token, message)
     result=main(event.message.text)
     message = TextSendMessage(text=result)
-    googlecalendarcreate("2018-09-01T00:00:00+08:00","2018-09-01T10:00:00+08:00","test")
+    line_bot_api.reply_message(event.reply_token, message)
+    message = TextSendMessage(text="test")
     line_bot_api.reply_message(event.reply_token, message)
 
 import os
