@@ -33,8 +33,14 @@ import requests
 import tempfile 
 from pygame import mixer
 
+#setting twilio
+from twilio.rest import TwilioRestClient
+
 #setting mic
 mixer.init()
+#llne setting
+import lineTool
+os.environ['linetoken']="dJPav4yXG1ILWCmlvdTqRvS2dgAodu8iwg6KY6ln6YZ"
 #seting apiai 
 try:
     import apiai
@@ -53,7 +59,16 @@ if not creds or creds.invalid:
     creds = tools.run_flow(flow, store)
 service = build('calendar', 'v3', http=creds.authorize(Http()))
 
-
+#mic
+def mic():
+    r=sr.Recognizer() 
+    with sr.Microphone() as source:
+        print("Please wait. Calibrating microphone...") 
+        #listen for 5 seconds and create the ambient noise energy level 
+        r.adjust_for_ambient_noise(source, duration=5) 
+        print("Say something!")
+        audio=r.listen(source)
+        return audio
 #play this text
 def play(text):
     tts = gTTS(text=text, lang='en')
@@ -63,11 +78,9 @@ def play(text):
         mixer.music.play()
     #speech.say('Hola mundo', 'es_ES')
     
-def googlecalendarcreate(start,end,description):
+def googlecalendarcreate(start,end,summary):
     event = {
-      'summary': 'Google I/O 2018 test',
-      'location': '800 Howard St., San Francisco, CA 94103',
-      'description': 'A chance to hear more about Google\'s developer products.',
+      'summary': summary,
       'start': {
         'dateTime': start,
       },
@@ -122,19 +135,40 @@ def main(text):
     status=response['result']['parameters']
     print(status)
     
-    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment ."):
+    #google event
+    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment."):
         print(status['start'])
         print(status['end'])
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
             print("make appointment,google")
-            googlecalendarcreate(start,end,"test")
+            play("please say appointment summary")
+            audio=mic()
+            try:
+                print("Google Speech Recognition thinks you said:")
+                print(r.recognize_google(audio, language="en"))
+                defult=r.recognize_google(audio, language="en")
+                googlecalendarcreate(start,end,defult)
+            except sr.UnknownValueError:
+                print("Google Speech Recognition could not understand audio(event will auto Add)")
+                defult="Auto add event"
+                googlecalendarcreate(start,end,defult)
+            except sr.RequestError as e:
+                print("No response from Google Speech Recognition service: {0}(event will auto Add)".format(e))
+                defult="Auto add event"
+                googlecalendarcreate(start,end,defult)
+    #lineNotify-->send message
+    if(response['result']['fulfillment']['speech']=="ok,send the Emergency message."):
+        msg = "Notify from Python \nEmergency message"
+        lineTool.lineNotify(os.environ['linetoken'], msg)
+        
     for i in status:
         #print(i) #json name
         #print(status[i])#json value
         if(i=="light"):
-            if(status[i]=="on" or status[i]=="off"):
+            if(status["place"]!=""):
+                print(status["place"])
                 payload = {'ctrl': status['light']}
                 requests.get("http://120.105.129.70/home/ctrl.php", params=payload) 
                 """
@@ -143,6 +177,11 @@ def main(text):
                 if(status['light']=="on"):
                     r_on= requests.get("http://192.168.0.13/1") 
                 """
+        if(i=="door"):
+            print(status["door"])
+            #payload = {'ctrl': status['light']}
+            #requests.get("http://120.105.129.70/home/ctrl.php", params=payload) 
+            
     play(text=response['result']['fulfillment']['speech'])     
     
 if __name__ == '__main__':

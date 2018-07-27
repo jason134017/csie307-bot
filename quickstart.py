@@ -51,12 +51,11 @@ elif(len(start)==20):
 event = {
   'summary': 'Google I/O 2018 test',
   'location': '800 Howard St., San Francisco, CA 94103',
-  'description': 'A chance to hear more about Google\'s developer products.',
   'start': {
-    'dateTime': '2018-07-26T20:00:00+08:00',
+    'dateTime': '2018-07-28T20:00:00+08:00',
   },
   'end': {
-    'dateTime': '2018-07-26T22:00:00+08:00',
+    'dateTime': '2018-07-28T22:00:00+08:00',
   },
   
 }

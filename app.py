@@ -12,8 +12,14 @@ from linebot.exceptions import (
 )
 from linebot.models import *
 
+import os
 import json
 import datetime
+
+import linetool
+#llne setting
+import lineTool
+os.environ['linetoken']="dJPav4yXG1ILWCmlvdTqRvS2dgAodu8iwg6KY6ln6YZ"
 app = Flask(__name__)
 #
 def timeformat(time):
@@ -40,11 +46,9 @@ if not creds or creds.invalid:
     creds = tools.run_flow(flow, store)
 service = build('calendar', 'v3', http=creds.authorize(Http()))
 #
-def googlecalendarcreate(start,end,description):
+def googlecalendarcreate(start,end,summary):
     event = {
-      'summary': 'Google I/O 2018 test',
-      'location': '800 Howard St., San Francisco, CA 94103',
-      'description': 'A chance to hear more about Google\'s developer products.',
+      'summary': summary,
       'start': {
         'dateTime': start,
       },
@@ -74,12 +78,16 @@ def main(text):
     #print (response.read())
     status=response['result']['parameters']
     
-    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment ."):
+    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment."):
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
-            googlecalendarcreate(start,end,"test")
-            
+            googlecalendarcreate(start,end,"Auto add with linebot")
+    
+    if(response['result']['fulfillment']['speech']=="ok,send the Emergency message."):
+        msg = "Notify from Python \nEmergency message"
+        lineTool.lineNotify(os.environ['linetoken'], msg) 
+        
     return response['result']['fulfillment']['speech']     
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
@@ -110,7 +118,7 @@ def handle_message(event):
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
-import os
+
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
