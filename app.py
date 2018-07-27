@@ -54,7 +54,8 @@ def googlecalendarcreate(start,end,description):
   
     }
     event = service.events().insert(calendarId='primary', body=event).execute()
-    
+    return
+
 import apiai
 
 CLIENT_ACCESS_TOKEN = 'e6e3017b385347a8b26284f52c6ea2b0'
@@ -77,7 +78,7 @@ def main(text):
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
-            googlecalendarcreate("2018-07-27T20:00:00+08:00","2018-07-27T21:00:00+08:00","test")
+            googlecalendarcreate(start,end,"test")
 
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
