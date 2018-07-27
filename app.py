@@ -107,8 +107,6 @@ def handle_message(event):
     result=main(event.message.text)
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
-    message = TextSendMessage(text="test")
-    line_bot_api.reply_message(event.reply_token, message)
 
 import os
 if __name__ == "__main__":
