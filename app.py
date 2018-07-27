@@ -77,7 +77,7 @@ def main(text):
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
-            googlecalendarcreate(start,end,"test")
+            googlecalendarcreate("2018-07-27T20:00:00+08:00","2018-07-27T21:00:00+08:00","test")
 
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
