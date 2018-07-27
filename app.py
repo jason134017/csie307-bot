@@ -19,7 +19,6 @@ import datetime
 import linetool
 #llne setting
 import lineTool
-os.environ['linetoken']="dJPav4yXG1ILWCmlvdTqRvS2dgAodu8iwg6KY6ln6YZ"
 app = Flask(__name__)
 #
 def timeformat(time):
