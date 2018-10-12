@@ -66,7 +66,7 @@ def main(text):
 
     request = ai.text_request()
 
-    request.lang = 'de'  # optional, default value equal 'en'
+    request.lang = 'zh-tw'  # optional, default value equal 'en'
 
     request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
 
@@ -76,13 +76,13 @@ def main(text):
     #print (response.read())
     status=response['result']['parameters']
     
-    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment."):
+    if(response['result']['fulfillment']['speech']=="好的,我把行程預約好了"):
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
             googlecalendarcreate(start,end,"Auto add with linebot")
     
-    if(response['result']['fulfillment']['speech']=="ok,send the Emergency message."):
+    if(response['result']['fulfillment']['speech']=="好的，正在發送緊急訊息"):
         msg = "Notify from Python \nEmergency message"
         lineTool.lineNotify(os.environ['linetoken'], msg) 
         
