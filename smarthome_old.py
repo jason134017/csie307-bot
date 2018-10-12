@@ -22,7 +22,7 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 
-import time
+
 import os.path
 import json as json
 import sys
@@ -33,14 +33,8 @@ import requests
 import tempfile 
 from pygame import mixer
 
-#setting twilio
-from twilio.rest import TwilioRestClient
-
 #setting mic
 mixer.init()
-#llne setting
-import lineTool
-os.environ['linetoken']="dJPav4yXG1ILWCmlvdTqRvS2dgAodu8iwg6KY6ln6YZ"
 #seting apiai 
 try:
     import apiai
@@ -59,29 +53,21 @@ if not creds or creds.invalid:
     creds = tools.run_flow(flow, store)
 service = build('calendar', 'v3', http=creds.authorize(Http()))
 
-#mic
-def mic():
-    r=sr.Recognizer() 
-    with sr.Microphone() as source:
-        print("Please wait. Calibrating microphone...") 
-        #listen for 5 seconds and create the ambient noise energy level 
-        r.adjust_for_ambient_noise(source, duration=5) 
-        print("Say something!")
-        audio=r.listen(source)
-        return audio
+
 #play this text
 def play(text):
+    tts = gTTS(text=text, lang='en')
     with tempfile.NamedTemporaryFile(delete=True) as fp:
-        tts = gTTS(text=text, lang='zh-tw')
         tts.save('{}.mp3'.format(fp.name))
         mixer.music.load('{}.mp3'.format(fp.name))
         mixer.music.play()
-        time.sleep(1)
     #speech.say('Hola mundo', 'es_ES')
     
-def googlecalendarcreate(start,end,summary):
+def googlecalendarcreate(start,end,description):
     event = {
-      'summary': summary,
+      'summary': 'Google I/O 2018 test',
+      'location': '800 Howard St., San Francisco, CA 94103',
+      'description': 'A chance to hear more about Google\'s developer products.',
       'start': {
         'dateTime': start,
       },
@@ -96,8 +82,8 @@ def googlecalendarcreate(start,end,summary):
 #execute     
 def run(text):
     #tts = gTTS(text="execute"+text, lang='en')
-    play("執行"+text)
-    print("執行",text)
+    play("execute"+text)
+    print("execute",text)
     
 def timeformat(time):
     today=datetime.date.today()
@@ -120,7 +106,7 @@ def main(text):
 
     request = ai.text_request()
 
-    request.lang = 'zh-tw'  # optional, default value equal 'en'
+    request.lang = 'de'  # optional, default value equal 'en'
 
     request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
 
@@ -136,40 +122,19 @@ def main(text):
     status=response['result']['parameters']
     print(status)
     
-    #google event
-    if(response['result']['fulfillment']['speech']=="好的,我把行程預約好了"):
+    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment ."):
         print(status['start'])
         print(status['end'])
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
             print("make appointment,google")
-            play("請問行程的摘要")
-            audio=mic()
-            try:
-                print("Google Speech Recognition thinks you said:")
-                print(r.recognize_google(audio, language="zh-tw"))
-                defult=r.recognize_google(audio, language="zh-tw")
-                googlecalendarcreate(start,end,defult)
-            except sr.UnknownValueError:
-                print("Google Speech Recognition could not understand audio(event will auto Add)")
-                defult="Auto add event"
-                googlecalendarcreate(start,end,defult)
-            except sr.RequestError as e:
-                print("No response from Google Speech Recognition service: {0}(event will auto Add)".format(e))
-                defult="Auto add event"
-                googlecalendarcreate(start,end,defult)
-    #lineNotify-->send message
-    if(response['result']['fulfillment']['speech']=="好的，正在發送緊急訊息"):
-        msg = "Notify from Python \nEmergency message"
-        lineTool.lineNotify(os.environ['linetoken'], msg)
-        
+            googlecalendarcreate(start,end,"test")
     for i in status:
         #print(i) #json name
         #print(status[i])#json value
         if(i=="light"):
-            if(status["place"]!=""):
-                print(status["place"])
+            if(status[i]=="on" or status[i]=="off"):
                 payload = {'ctrl': status['light']}
                 requests.get("http://120.105.129.70/home/ctrl.php", params=payload) 
                 """
@@ -178,10 +143,6 @@ def main(text):
                 if(status['light']=="on"):
                     r_on= requests.get("http://192.168.0.13/1") 
                 """
-        if(i=="door"):
-            print(status["door"])
-            #payload = {'ctrl': status['light']}
-            #requests.get("http://120.105.129.70/home/ctrl.php", params=payload) 
     play(text=response['result']['fulfillment']['speech'])     
     
 if __name__ == '__main__':
@@ -189,21 +150,23 @@ if __name__ == '__main__':
     with sr.Microphone() as source:
         print("Please wait. Calibrating microphone...") 
         #listen for 5 seconds and create the ambient noise energy level 
-        r.adjust_for_ambient_noise(source, duration=6)    
+        r.adjust_for_ambient_noise(source, duration=6)  
+        """
         tts = gTTS(text="hello", lang='en')
         with tempfile.NamedTemporaryFile(delete=True) as fp:
-            #tts.save('{}.mp3'.format(fp.name))
-            mixer.music.load('voice.mp3'.format(fp.name))
+            tts.save('{}.mp3'.format(fp.name))
+            mixer.music.load('{}.mp3'.format(fp.name))
             mixer.music.play()
+        """
         print("Say something!")
         audio=r.listen(source)
 
 # recognize speech using Google Speech Recognition 
     try:
         print("Google Speech Recognition thinks you said:")
-        print(r.recognize_google(audio, language="zh-tw"))
-        run(r.recognize_google(audio, language="zh-tw"))
-        main(r.recognize_google(audio, language="zh-tw"))
+        print(r.recognize_google(audio, language="en"))
+        run(r.recognize_google(audio, language="en"))
+        main(r.recognize_google(audio, language="en"))
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:

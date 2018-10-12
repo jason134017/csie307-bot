@@ -22,6 +22,7 @@ from apiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
 
+
 import time
 import os.path
 import json as json
@@ -71,12 +72,11 @@ def mic():
         return audio
 #play this text
 def play(text):
+    tts = gTTS(text=text, lang='en')
     with tempfile.NamedTemporaryFile(delete=True) as fp:
-        tts = gTTS(text=text, lang='zh-tw')
         tts.save('{}.mp3'.format(fp.name))
         mixer.music.load('{}.mp3'.format(fp.name))
         mixer.music.play()
-        time.sleep(1)
     #speech.say('Hola mundo', 'es_ES')
     
 def googlecalendarcreate(start,end,summary):
@@ -96,8 +96,8 @@ def googlecalendarcreate(start,end,summary):
 #execute     
 def run(text):
     #tts = gTTS(text="execute"+text, lang='en')
-    play("執行"+text)
-    print("執行",text)
+    play("execute"+text)
+    print("execute",text)
     
 def timeformat(time):
     today=datetime.date.today()
@@ -120,7 +120,7 @@ def main(text):
 
     request = ai.text_request()
 
-    request.lang = 'zh-tw'  # optional, default value equal 'en'
+    request.lang = 'de'  # optional, default value equal 'en'
 
     request.session_id = "<SESSION ID, UNIQUE FOR EACH USER>"
 
@@ -137,19 +137,19 @@ def main(text):
     print(status)
     
     #google event
-    if(response['result']['fulfillment']['speech']=="好的,我把行程預約好了"):
+    if(response['result']['fulfillment']['speech']=="ok,I will make an appointment."):
         print(status['start'])
         print(status['end'])
         if(status['start']!='' and status['end']!=''):
             start=timeformat(status['start'])
             end=timeformat(status['end'])
             print("make appointment,google")
-            play("請問行程的摘要")
+            play("please say appointment summary")
             audio=mic()
             try:
                 print("Google Speech Recognition thinks you said:")
-                print(r.recognize_google(audio, language="zh-tw"))
-                defult=r.recognize_google(audio, language="zh-tw")
+                print(r.recognize_google(audio, language="en"))
+                defult=r.recognize_google(audio, language="en")
                 googlecalendarcreate(start,end,defult)
             except sr.UnknownValueError:
                 print("Google Speech Recognition could not understand audio(event will auto Add)")
@@ -160,7 +160,7 @@ def main(text):
                 defult="Auto add event"
                 googlecalendarcreate(start,end,defult)
     #lineNotify-->send message
-    if(response['result']['fulfillment']['speech']=="好的，正在發送緊急訊息"):
+    if(response['result']['fulfillment']['speech']=="ok,send the Emergency message."):
         msg = "Notify from Python \nEmergency message"
         lineTool.lineNotify(os.environ['linetoken'], msg)
         
@@ -182,6 +182,7 @@ def main(text):
             print(status["door"])
             #payload = {'ctrl': status['light']}
             #requests.get("http://120.105.129.70/home/ctrl.php", params=payload) 
+            
     play(text=response['result']['fulfillment']['speech'])     
     
 if __name__ == '__main__':
@@ -201,9 +202,10 @@ if __name__ == '__main__':
 # recognize speech using Google Speech Recognition 
     try:
         print("Google Speech Recognition thinks you said:")
-        print(r.recognize_google(audio, language="zh-tw"))
-        run(r.recognize_google(audio, language="zh-tw"))
-        main(r.recognize_google(audio, language="zh-tw"))
+        print(r.recognize_google(audio, language="en"))
+        run(r.recognize_google(audio, language="en"))
+        time.sleep(1)
+        main(r.recognize_google(audio, language="en"))
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:

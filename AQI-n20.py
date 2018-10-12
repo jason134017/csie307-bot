@@ -102,3 +102,19 @@ plt.plot(denorm_pred,color='red', label='Prediction')
 plt.plot(denorm_ytest,color='blue', label='Answer')
 plt.legend(loc='best')
 plt.show()
+
+# Add an op to initialize the variables.
+init_op = tf.global_variables_initializer()
+
+# Add ops to save and restore all the variables.
+saver = tf.train.Saver()
+
+# Later, launch the model, initialize the variables, do some work, and save the
+# variables to disk.
+with tf.Session() as sess:
+  sess.run(init_op)
+  # Do some work with the model.
+
+  # Save the variables to disk.
+  save_path = saver.save(sess, "/tmp/model.ckpt")
+  print("Model saved in path: %s" % save_path)
