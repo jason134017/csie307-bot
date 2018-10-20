@@ -175,7 +175,7 @@ def main(text):
             print(start, event['summary'])
             s=start+" "+event['summary']
            
-    print(s)      
+    #print(s)      
     #lineNotify-->send message
     if(response['result']['fulfillment']['speech']=="好的，正在發送緊急訊息"):
         msg = "Notify from Python \nEmergency message"

@@ -101,9 +101,8 @@ def main(text):
             start = event['start'].get('dateTime', event['start'].get('date'))
             #print(start, event['summary'])
             s=start+"行程名稱"+event['summary']
-            return s
             
-    return s     
+    return s 
 
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
@@ -131,6 +130,7 @@ def handle_message(event):
     #message = TextSendMessage(text=event.message.text)
     #line_bot_api.reply_message(event.reply_token, message)
     result=main(event.message.text)
+    result+="123"
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
