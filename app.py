@@ -130,7 +130,6 @@ def handle_message(event):
     #message = TextSendMessage(text=event.message.text)
     #line_bot_api.reply_message(event.reply_token, message)
     result=main(event.message.text)
-    result+="123"
     message = TextSendMessage(text=result)
     line_bot_api.reply_message(event.reply_token, message)
 
