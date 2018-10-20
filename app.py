@@ -75,6 +75,7 @@ def main(text):
     response = json.loads(request.getresponse().read().decode('utf-8'))
     #print (response.read())
     status=response['result']['parameters']
+    s=response['result']['fulfillment']['speech']
     
     if(response['result']['fulfillment']['speech']=="好的,我把行程預約好了"):
         if(status['start']!='' and status['end']!=''):
@@ -86,7 +87,24 @@ def main(text):
         msg = "Notify from Python \nEmergency message"
         lineTool.lineNotify(os.environ['linetoken'], msg) 
         
-    return response['result']['fulfillment']['speech']     
+    if(response['result']['fulfillment']['speech']=="好的，正在查詢行程"):
+        now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+        #print('Getting the upcoming 10 events')
+        events_result = service.events().list(calendarId='primary', timeMin=now,
+                                      maxResults=1, singleEvents=True,
+                                      orderBy='startTime').execute()
+        events = events_result.get('items', [])
+        if not events:
+            #print('No upcoming events found.')
+            s="沒有安排的行程"
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            #print(start, event['summary'])
+            s=start+"行程名稱"+event['summary']
+            return s
+            
+    return s     
+
 # Channel Access Token
 line_bot_api = LineBotApi('hENhmJA37FLCWKahY/DjYkbvrQuHlekCAsrZ0iUhtpzbyfc+aXllNKV1Do7S1z6MdBMuPVvlcB97QnY9e1Glk5n5tlUhdlmTqhexrZFEidyR2wj9jwgixxT+mLY+HKak5HanZRA0Oy3bPO22B8S8mwdB04t89/1O/w1cDnyilFU=')
 # Channel Secret

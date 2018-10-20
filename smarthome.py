@@ -135,6 +135,7 @@ def main(text):
     #light statu change
     status=response['result']['parameters']
     print(status)
+    s=response['result']['fulfillment']['speech']
     
     #google event
     if(response['result']['fulfillment']['speech']=="好的,我把行程預約好了"):
@@ -159,10 +160,28 @@ def main(text):
                 print("No response from Google Speech Recognition service: {0}(event will auto Add)".format(e))
                 defult="Auto add event"
                 googlecalendarcreate(start,end,defult)
+    # Call the Calendar API         
+    if(response['result']['fulfillment']['speech']=="好的，正在查詢行程"):
+        now = datetime.datetime.utcnow().isoformat() + 'Z' # 'Z' indicates UTC time
+        print('Getting the upcoming 10 events')
+        events_result = service.events().list(calendarId='primary', timeMin=now,
+                                      maxResults=1, singleEvents=True,
+                                      orderBy='startTime').execute()
+        events = events_result.get('items', [])
+        if not events:
+            print('No upcoming events found.')
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print(start, event['summary'])
+            s=start+" "+event['summary']
+           
+    print(s)      
     #lineNotify-->send message
     if(response['result']['fulfillment']['speech']=="好的，正在發送緊急訊息"):
         msg = "Notify from Python \nEmergency message"
         lineTool.lineNotify(os.environ['linetoken'], msg)
+    
+    
         
     for i in status:
         #print(i) #json name
