@@ -1,14 +1,14 @@
-# Line Bot 教學
+# Line Bot 聊天機器人
 
-本教程介紹如何使用 Python LINE Bot SDK 在 Heroku 上架設一個簡單的學舌鳥機器人。
+本教程介紹如何使用 Python LINE Bot SDK 與 dialogflow 在 Heroku 上架設一個居家管理的聊天助理。
 
-如果您想以另一種語言架設範例 bot，請參閱以下  LINE Bot SDK repositories。
+<!-- 如果您想以另一種語言架設範例 bot，請參閱以下  LINE Bot SDK repositories。
 - [PHP](https://github.com/line/line-bot-sdk-php)
 - [Go](https://github.com/line/line-bot-sdk-go)
 - [Perl](https://github.com/line/line-bot-sdk-perl)
 - [Ruby](https://github.com/line/line-bot-sdk-ruby)
 - [Python](https://github.com/line/line-bot-sdk-python)
-- [Node.js](https://github.com/line/line-bot-sdk-nodejs)
+- [Node.js](https://github.com/line/line-bot-sdk-nodejs) -->
 
 ## 在你開始之前
 
@@ -27,11 +27,12 @@
   ![](https://i.imgur.com/Y3njp7I.png)
 2. 輸入自己喜歡的 App name ，然後點擊 Create app
   ![](https://i.imgur.com/WJ85jXR.png)
-3. 下載 [範例程式碼](https://github.com/yaoandy107/line-bot-tutorial/archive/master.zip)
+3. 下載 [範例程式碼](https://drive.google.com/file/d/1qiYyI_dyh9PuioSunZrjBSn05Cn-N4W_/view?usp=sharing)
 4. 進入 [Line 控制台](https://developers.line.me/console/)，選擇你剛剛創建的機器人
-  ![](https://i.imgur.com/n3bQym2.png)
+  ![](./line_console.png)
 5. 取得 **channel secret** 和 **channel access token**，如果沒有內容，請點 Issue
-  ![](https://i.imgur.com/entIggx.png)
+  ![](./secret1.png)
+  ![](./secret2.png)
 6. 使用編輯器開啟範例程式碼資料夾內的 app.py，填入 **channel secret** 和 **channel access token**
   ![](https://i.imgur.com/Uz16joi.png)
 7. 並使用 Heroku CLI 將程式部署到 Heroku 上面 （請參考 [使用 Heroku CLI](#使用-heroku-cli)）
@@ -338,3 +339,5 @@ message = TemplateSendMessage(
 )
 line_bot_api.reply_message(event.reply_token, message)
 ```
+
+# Dialogflow

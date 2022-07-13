@@ -43,7 +43,7 @@ except ImportError:
         os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
     )
     import apiai
-CLIENT_ACCESS_TOKEN = 'e6e3017b385347a8b26284f52c6ea2b0'
+CLIENT_ACCESS_TOKEN = 'DAILOGFLOW_TOKEN'
 # Setup the Calendar API
 SCOPES = 'https://www.googleapis.com/auth/calendar'
 store = file.Storage('token.json')
