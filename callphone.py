@@ -10,10 +10,10 @@ from twilio.rest import TwilioRestClient
 
 # Twilio phone number goes here. Grab one at https://twilio.com/try-twilio
 # and use the E.164 format, for example: "+12025551234"
-TWILIO_PHONE_NUMBER = "+886930160807"
+TWILIO_PHONE_NUMBER = "PHONE_NUMBER"
 
 # list of one or more phone numbers to dial, in "+19732644210" format
-DIAL_NUMBERS = ["+886916822953",]
+DIAL_NUMBERS = ["PHONE_NUMBER",]
 
 # URL location of TwiML instructions for how to handle the phone call
 TWIML_INSTRUCTIONS_URL = \
@@ -21,7 +21,7 @@ TWIML_INSTRUCTIONS_URL = \
 
 # replace the placeholder values with your Account SID and Auth Token
 # found on the Twilio Console: https://www.twilio.com/console
-client = TwilioRestClient("ACfaf270c15d4a8e660ca7e320611e4cf5", "03c7a15d0a5dea404b500ce8e7274fac")
+client = TwilioRestClient("TOKEN", "TOKEN")
 
 
 def dial_numbers(numbers_list):
