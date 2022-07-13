@@ -3,8 +3,8 @@
 from twilio.rest import TwilioRestClient
 
 # Your Account Sid and Auth Token from twilio.com/user/account
-account_sid = "ACfaf270c15d4a8e660ca7e320611e4cf5"
-auth_token = "03c7a15d0a5dea404b500ce8e7274fac"
+account_sid = "TWILIO_ACCOUNT_SID"
+auth_token = "Auth_token"
 client = TwilioRestClient(account_sid, auth_token)
 
 numbers = client.available_phone_numbers("US") \

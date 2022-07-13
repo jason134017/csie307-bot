@@ -1,4 +1,4 @@
-./secret
-./ignore
-./test
+secret/
+ignore/
+test/
 token_backup
