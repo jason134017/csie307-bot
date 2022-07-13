@@ -2,3 +2,6 @@ secret/
 ignore/
 test/
 token_backup
+
+__pycache__/
+.spyproject/

@@ -341,3 +341,9 @@ line_bot_api.reply_message(event.reply_token, message)
 ```
 
 # Dialogflow
+**前置作業須將將 Google  API 服務Secret 放置於root資料夾**
+* token.json 
+* credentials.json
+
+**待更新**
+
